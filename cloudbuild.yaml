@@ -6,8 +6,13 @@ steps:
     - '-f'
     - 'Dockerfile_gcp'
     - '-t'
-    - 'gcr.io/$PROJECT_ID/cicd-buzz'
+    - 'gcr.io/$PROJECT_ID/cicd-buzz:$COMMIT_SHA'
     - '.'
+# Push image for running the app
+- name: 'docker'
+  args:
+    - 'push'
+    - 'gcr.io/$PROJECT_ID/cicd-buzz:$COMMIT_SHA'
 # Deploy an image from Container Registry to Cloud Run
 - name: 'gcr.io/cloud-builders/gcloud'
   args:
@@ -15,7 +20,7 @@ steps:
     - 'deploy'
     - 'cicd-buzz'
     - '--image'
-    - 'gcr.io/$PROJECT_ID/cicd-buzz'
+    - 'gcr.io/$PROJECT_ID/cicd-buzz:$COMMIT_SHA'
     - '--region'
     - 'europe-north1'
     - '--platform'
