@@ -1,0 +1,14 @@
+FROM alpine:3.7 as base
+RUN apk add --update python py-pip
+WORKDIR /src
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+COPY buzz ./buzz
+
+FROM base as tests
+COPY tests ./tests
+RUN ["python", "-m", "pytest", "-v"]
+
+FROM base as app
+CMD python ./app.py
